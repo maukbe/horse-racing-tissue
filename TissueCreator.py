@@ -14,6 +14,7 @@ class TissueCreator:
             self.calculateWeightScores()
             self.calculate_or_scores()
             self.calculate_trainer_scores()
+            self.calculate_jockey_scores()
             
             print(self.scores)
             print ("Tissue odds:")
@@ -24,6 +25,26 @@ class TissueCreator:
             for key in self.scores:
                 odds = float(self.scores[key])/float(total_score)
                 print (key, 1/odds)
+        
+        def calculate_jockey_scores(self):
+            print("Calculating jockey scores")
+            for key in self.horse_data_dict:
+                # Get totals and winners
+                jockey_form = self.horse_data_dict[key].jockey_form
+                totals = parser.get_jockey_form(jockey_form)
+                wins = totals[1]
+                if wins == 0:
+                    continue
+                win_percentage = 100*totals[0] / float(totals[1])
+                if win_percentage <= 20 and win_percentage <= 25:
+                    self.scores[key] = self.scores[key] + 1
+                elif 25 < win_percentage and win_percentage <= 33:
+                    self.scores[key] = self.scores[key] + 2
+                elif 33 <= win_percentage and win_percentage < 50:
+                    self.scores[key] = self.scores[key] + 3
+                else:
+                    self.scores[key] = self.scores[key] + 4
+            
         
         def calculate_trainer_scores(self):
             print("Calculating trainer scores")
