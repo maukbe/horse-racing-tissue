@@ -55,9 +55,16 @@ def get_jockey_form(jockey_node):
     total_runner = etree.ElementTree(row).findall("//td")
     totals = (int(total_runner[1].text), int(total_runner[2].text))
     return totals
+
 def get_last_result(form_node):
     form_table = form_node.find("//table[@id='horse-form-full']")
-    last_race = etree.ElementTree(form_table).findall("//tr")[1]
+    races = etree.ElementTree(form_table).findall("//tr")
+    last_race = races[1]
+    for i in range(1,len(races)):
+        if "class" in races[i].attrib:
+            i = i + 1
+        else:
+            last_race = races[i]
     result_cell = etree.ElementTree(last_race).findall("//td")[3]
     result_span = etree.ElementTree(result_cell).find("//span")
     strong_array = etree.ElementTree(result_span).find("//strong")

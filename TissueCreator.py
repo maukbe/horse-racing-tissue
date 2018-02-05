@@ -1,6 +1,6 @@
 # Take an array of horses and race information and calculate the odds for each
 # horse
-import parser
+import node_parser
 import utils
 from position import Position
 
@@ -20,7 +20,7 @@ class TissueCreator:
             print ("Tissue odds:")
             total_score = sum(self.scores.values())
             for key in self.scores:
-                if self.scores[key] < 0:
+                if self.scores[key] <= 0:
                     self.scores[key] = 0.1
             for key in self.scores:
                 odds = float(self.scores[key])/float(total_score)
@@ -31,7 +31,7 @@ class TissueCreator:
             for key in self.horse_data_dict:
                 # Get totals and winners
                 jockey_form = self.horse_data_dict[key].jockey_form
-                totals = parser.get_jockey_form(jockey_form)
+                totals = node_parser.get_jockey_form(jockey_form)
                 wins = totals[1]
                 if wins == 0:
                     continue
@@ -51,7 +51,7 @@ class TissueCreator:
             for key in self.horse_data_dict:
                 # Get totals and winners
                 trainer_form = self.horse_data_dict[key].trainer_form
-                totals = parser.get_trainer_form(trainer_form)
+                totals = node_parser.get_trainer_form(trainer_form)
                 wins = totals[1]
                 if wins == 0:
                     continue
@@ -69,18 +69,16 @@ class TissueCreator:
                         self.scores[key] = self.scores[key] + 5
                 else:
                     self.scores[key] = self.scores[key] + 0.5
-                        
-                
-                
-                
+
         def calculate_or_scores(self):
             print ("Calculating OR scores")
             or_dict = {}
             for key in self.horse_data_dict:
+                print("Parsing OR for horse" + str(key))
                 horse_data = self.horse_data_dict[key]
                 # Get current OR
-                current_or = parser.get_or(horse_data.race_info)
-                old_or = parser.get_old_or(horse_data.form)
+                current_or = node_parser.get_or(horse_data.race_info)
+                old_or = node_parser.get_old_or(horse_data.form)
                 or_dict[key] = (current_or, old_or)
             
             for key in or_dict:
@@ -90,7 +88,7 @@ class TissueCreator:
                 except ValueError:
                     print ("Horse ", key, " has no previous OR")
                     continue
-                last_result_string = parser.get_last_result(self.horse_data_dict[key].form)
+                last_result_string = node_parser.get_last_result(self.horse_data_dict[key].form)
                 last_race_pos = utils.parse_result(last_result_string.strip())
                 or_diff = abs(current_or - old_or)
                 if current_or > old_or:
@@ -120,7 +118,7 @@ class TissueCreator:
             # Create dictionary of weights
             weight_pounds_dict = {}
             for key in self.horse_data_dict:
-                weight = parser.extract_weight(self.horse_data_dict[key].race_info) 
+                weight = node_parser.extract_weight(self.horse_data_dict[key].race_info)
                 weight_pounds_dict[key] = utils.parseWeight(weight)
            
             max_weight = max(weight_pounds_dict.values())

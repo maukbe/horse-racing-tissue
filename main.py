@@ -5,10 +5,9 @@ from Horse import Horse
 from TissueCreator import TissueCreator
 from horsedata import HorseData
 import utils
-import parser
+import node_parser
 
-
-page = requests.get('http://www.attheraces.com/racecard/Ayr/2-January-2018/1300')
+page = requests.get('http://www.attheraces.com/racecard/Sedgefield/6-February-2018/1620')
 eTree = etree.HTML(page.text)
 
 
@@ -16,28 +15,27 @@ eTree = etree.HTML(page.text)
 horses = eTree.xpath('//div[@class="card-item"]')
 
 horse_data_dict = {}
-
 i = 1
 for horse_div in horses:
     print ("Downloading data for horse: ", i)
     horse_node = etree.ElementTree(horse_div)
     
-    # Get horse form 
-    horse_url = parser.get_url(etree.ElementTree(horse_div))
+    # Get horse form
+    horse_url = node_parser.get_url(etree.ElementTree(horse_div))
     horse_page = requests.get("http://www.attheraces.com" + horse_url)
     horse_e_tree = etree.HTML(horse_page.text)
     horse_form = horse_e_tree.xpath('//body[@id="atr-body"]')
     horse_form_node = etree.ElementTree(horse_form[0])
     
     # Get trainer form
-    trainer_form_url = parser.get_trainer_url(etree.ElementTree(horse_div))
+    trainer_form_url = node_parser.get_trainer_url(etree.ElementTree(horse_div))
     trainer_page = requests.get("http://www.attheraces.com" + trainer_form_url)
     trainer_e_tree = etree.HTML(trainer_page.text)
     trainer_form = trainer_e_tree.xpath('//body[@id="atr-body"]')
     trainer_form_node = etree.ElementTree(trainer_form[0])
     
     # Get jockey form
-    jockey_form_url = parser.get_jockey_url(etree.ElementTree(horse_div))
+    jockey_form_url = node_parser.get_jockey_url(etree.ElementTree(horse_div))
     jockey_page = requests.get("http://www.attheraces.com" + trainer_form_url)
     jockey_e_tree = etree.HTML(jockey_page.text)
     jockey_form = trainer_e_tree.xpath('//body[@id="atr-body"]')
