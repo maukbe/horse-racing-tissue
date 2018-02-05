@@ -15,6 +15,7 @@ class TissueCreator:
             self.calculate_or_scores()
             self.calculate_trainer_scores()
             self.calculate_jockey_scores()
+            self.calculate_distance_scores()
             
             print(self.scores)
             print ("Tissue odds:")
@@ -24,11 +25,27 @@ class TissueCreator:
                     self.scores[key] = 0.1
             for key in self.scores:
                 odds = float(self.scores[key])/float(total_score)
-                print (key, 1/odds)
-        
+                print (key, str(round(1/odds,2)))
+
+        def calculate_distance_scores(self):
+            print("Calculating distance scores")
+            for key in self.horse_data_dict:
+                print("Calculating distance score for horse " + str(key))
+                horse_data = self.horse_data_dict[key]
+                last_races = node_parser.get_last_races(horse_data.form,6)
+                for i in range(1, len(last_races)):
+                    result_string = node_parser.get_race_result(last_races[i])
+                    race_result = utils.parse_result(result_string)
+                    if race_result == Position.WON:
+                        self.scores[key] += 2
+                    elif race_result == Position.PLACED:
+                        self.scores[key] += 1
+            self.normalise_scores()
+
         def calculate_jockey_scores(self):
             print("Calculating jockey scores")
             for key in self.horse_data_dict:
+                print("Calculating jockey score for horse " + str(key))
                 # Get totals and winners
                 jockey_form = self.horse_data_dict[key].jockey_form
                 totals = node_parser.get_jockey_form(jockey_form)

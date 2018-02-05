@@ -73,4 +73,28 @@ def get_last_result(form_node):
     else:
         return strong_array.text
 
-    
+# Get the last n races
+def get_last_races(form_node, n):
+    form_table = form_node.find("//table[@id='horse-form-full']")
+    races = etree.ElementTree(form_table).findall("//tr")
+    valid_races = []
+    added_races = 0
+    for i in range(1, len(races)):
+        if "class" in races[i].attrib:
+            continue
+        else:
+            valid_races.append(races[i])
+            added_races = added_races + 1
+        i = i + 1
+        if added_races == n:
+            break
+    return valid_races
+
+def get_race_result(form_node):
+        result_cell = etree.ElementTree(form_node).findall("//td")[3]
+        result_span = etree.ElementTree(result_cell).find("//span")
+        strong_array = etree.ElementTree(result_span).find("//strong")
+        if strong_array is None:
+            return result_span.text
+        else:
+            return strong_array.text

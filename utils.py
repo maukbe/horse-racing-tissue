@@ -9,7 +9,7 @@ POUNDS_IN_STONE = 14
 # @return Position enum
 def parse_result(resultString):
     result = resultString.split("/")
-    if result[0] == "Won":
+    if "Won" in result[0]:
         return Position.WON
     elif result[0] == "PU" or result[0] == "F":
         return Position.DIDNT_PLACE
