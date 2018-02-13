@@ -55,9 +55,13 @@ def get_jockey_form(jockey_node):
     total_runner = etree.ElementTree(row).findall("//td")
     totals = (int(total_runner[1].text), int(total_runner[2].text))
     return totals
+    
 def get_last_result(form_node):
     form_table = form_node.find("//table[@id='horse-form-full']")
     last_race = etree.ElementTree(form_table).findall("//tr")[1]
+    # Need to check the last race isn't a divider
+    if "class" in last_race.attrib and  last_race.attrib["class"] == "divide newyard hidden-with-filters":
+        last_race = etree.ElementTree(form_table).findall("//tr")[2]
     result_cell = etree.ElementTree(last_race).findall("//td")[3]
     result_span = etree.ElementTree(result_cell).find("//span")
     strong_array = etree.ElementTree(result_span).find("//strong")
@@ -65,5 +69,30 @@ def get_last_result(form_node):
         return result_span.text
     else:
         return strong_array.text
-
+        
+def get_race_distance(page_node):
+    distance_p = page_node.find("//p[@class='distance']")
+    distance_node = etree.ElementTree(distance_p).find("//span")
+    return distance_node.text
     
+def get_last_races(number_races,form_node):
+    races = []
+    # Get table of last races
+    form_table = form_node.find("//table[@id='horse-form-full']")
+    races = etree.ElementTree(form_table).findall("//tr")
+    # Check the horse has ran enough races
+    if len(races) < number_races:
+        number_races = len(races)
+    # Start at the second row
+    i = 1
+    while i < number_races:
+        race = races[i]
+        # Need to check the last race isn't a divider
+        if "class" in race.attrib and  race.attrib["class"] == "divide newyard hidden-with-filters":
+            last_race = etree.ElementTree(form_table).findall("//tr")[2]
+        i = i + 1
+    return races
+    
+def get_form_race_distance(race_node):
+    race_details = race_node.findall("//td")[1]
+    return etree.ElementTree(race_details).findall("//a")[1]
