@@ -48,8 +48,9 @@ for horse_div in horses:
     i = i+1
     
 # Get the race distance
-distance_string = parser.get_race_distance(etree.ElementTree(page[0]))
+distance_string = node_parser.get_race_distance(etree.ElementTree(page[0]))
 distance_furlongs = utils.parse_distance(distance_string) 
+print("Race distance", distance_furlongs)
 
 tissue = TissueCreator(horse_data_dict, distance_furlongs)
 tissue.create_tissue()

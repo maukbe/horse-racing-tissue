@@ -27,24 +27,23 @@ class TissueCreator:
             for key in self.scores:
                 odds = float(self.scores[key])/float(total_score)
                 print (key, 1/odds)
-                
-        def calculate_distance_scores(self):
-            print("Calculating distance scores")
-            
-            for key in self.horse_data_dict:
-                horse_form = self.horse_data_dict[key].form
-                i = 0 
-                races = parser.get_last_races(6,horse_form)
-                while i < len(races):
-                    race = races[i]
-                    # Get last race result
-                    
-                    # If won or placed and race was similar distance to this 
-                    # one allocate points
-                    distance_furlongs = parser.get_form_race_distance(race)
-                    print (distance_furlongs)
-                    i = i + 1
-                print (key, str(round(1/odds,2)))
+#                
+#        def calculate_distance_scores(self):
+#            print("Calculating distance scores")
+#            
+#            for key in self.horse_data_dict:
+#                horse_form = self.horse_data_dict[key].form
+#                i = 0 
+#                races = node_parser.get_last_races(6,horse_form)
+#                while i < len(races):
+#                    race = races[i]
+#                    # Get last race result
+#                    
+#                    # If won or placed and race was similar distance to this 
+#                    # one allocate points
+#                    distance_furlongs = node_parser.get_form_race_distance(race)
+#                    print (distance_furlongs)
+#                    i = i + 1
 
         def calculate_distance_scores(self):
             print("Calculating distance scores")
