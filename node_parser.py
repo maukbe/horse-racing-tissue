@@ -55,13 +55,15 @@ def get_jockey_form(jockey_node):
     total_runner = etree.ElementTree(row).findall("//td")
     totals = (int(total_runner[1].text), int(total_runner[2].text))
     return totals
-    
+
 def get_last_result(form_node):
     form_table = form_node.find("//table[@id='horse-form-full']")
-    last_race = etree.ElementTree(form_table).findall("//tr")[1]
-    # Need to check the last race isn't a divider
-    if "class" in last_race.attrib and  last_race.attrib["class"] == "divide newyard hidden-with-filters":
-        last_race = etree.ElementTree(form_table).findall("//tr")[2]
+    races = etree.ElementTree(form_table).findall("//tr")
+    last_race = races[1]
+    for i in range(1,len(races)):
+        if "class" in races[i].attrib:
+            i = i + 1
+        else:
     result_cell = etree.ElementTree(last_race).findall("//td")[3]
     result_span = etree.ElementTree(result_cell).find("//span")
     strong_array = etree.ElementTree(result_span).find("//strong")
@@ -69,6 +71,32 @@ def get_last_result(form_node):
         return result_span.text
     else:
         return strong_array.text
+
+# Get the last n races
+def get_last_races(form_node, n):
+    form_table = form_node.find("//table[@id='horse-form-full']")
+    races = etree.ElementTree(form_table).findall("//tr")
+    valid_races = []
+    added_races = 0
+    for i in range(1, len(races)):
+        if "class" in races[i].attrib:
+            continue
+        else:
+            valid_races.append(races[i])
+            added_races = added_races + 1
+        i = i + 1
+        if added_races == n:
+            break
+    return valid_races
+
+def get_race_result(form_node):
+        result_cell = etree.ElementTree(form_node).findall("//td")[3]
+        result_span = etree.ElementTree(result_cell).find("//span")
+        strong_array = etree.ElementTree(result_span).find("//strong")
+        if strong_array is None:
+            return result_span.text
+        else:
+            return strong_array.text
         
 def get_race_distance(page_node):
     distance_p = page_node.find("//p[@class='distance']")
