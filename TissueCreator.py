@@ -5,10 +5,11 @@ import utils
 from position import Position
 
 class TissueCreator:
-        def __init__(self, horse_data_dict):
+        def __init__(self, horse_data_dict, distance):
             self.horse_data_dict = horse_data_dict
             self.runners = len(horse_data_dict)
             self.scores = {}
+            self.distance = distance
             
         def create_tissue(self):
             self.calculateWeightScores()
@@ -25,7 +26,24 @@ class TissueCreator:
                     self.scores[key] = 0.1
             for key in sorted(self.scores):
                 odds = float(self.scores[key])/float(total_score)
-                print (key, str(round(1/odds,2)))
+                print (key, 1/odds)
+#                
+#        def calculate_distance_scores(self):
+#            print("Calculating distance scores")
+#            
+#            for key in self.horse_data_dict:
+#                horse_form = self.horse_data_dict[key].form
+#                i = 0 
+#                races = node_parser.get_last_races(6,horse_form)
+#                while i < len(races):
+#                    race = races[i]
+#                    # Get last race result
+#                    
+#                    # If won or placed and race was similar distance to this 
+#                    # one allocate points
+#                    distance_furlongs = node_parser.get_form_race_distance(race)
+#                    print (distance_furlongs)
+#                    i = i + 1
 
         # TODO Check distance before adding to score
         # TODO Add a second score for the ground
@@ -67,6 +85,7 @@ class TissueCreator:
                     self.scores[key] = self.scores[key] + 3
                 else:
                     self.scores[key] = self.scores[key] + 4
+            self.normalise_scores()
             
         
         def calculate_trainer_scores(self):
@@ -92,7 +111,8 @@ class TissueCreator:
                         self.scores[key] = self.scores[key] + 5
                 else:
                     self.scores[key] = self.scores[key] + 0.5
-
+            self.normalise_scores()
+                        
         def calculate_or_scores(self):
             print ("Calculating OR scores")
             or_dict = {}
@@ -108,6 +128,8 @@ class TissueCreator:
                 or_dict[key] = (current_or, old_or)
             
             for key in or_dict:
+                print ("Getting OR for horse ", key)
+                current_or = int(or_dict[key][0])
                 try:
                     current_or = int(or_dict[key][0])
                     old_or = int(or_dict[key][1])
@@ -146,7 +168,7 @@ class TissueCreator:
             for key in self.horse_data_dict:
                 weight = node_parser.extract_weight(self.horse_data_dict[key].race_info)
                 weight_pounds_dict[key] = utils.parseWeight(weight)
-           
+            
             max_weight = max(weight_pounds_dict.values())
             min_weight = min(weight_pounds_dict.values())
             total_weight_diff = max_weight - min_weight
@@ -172,4 +194,5 @@ class TissueCreator:
                     self.scores[key] = init_score - 2
                 else:
                     self.scores[key] = init_score
+            self.normalise_scores()
             print (self.scores)

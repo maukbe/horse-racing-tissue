@@ -48,6 +48,17 @@ def poundsToKilos(weightPounds):
 def parseWeight(weightString):
     poundsKilos = weightString.split("-")
     return POUNDS_IN_STONE*int(poundsKilos[0]) + int(poundsKilos[1])
+    
+# Get distance in furlongs from string of form 1m 3F 123yds
+# @distance_string Distance string
+# @return           Distance in furlongs
+def parse_distance(distance_string):
+    distance = distance_string.split(" ")
+    miles =  int(distance[0].split("m")[0])
+    furlongs = 0
+    if len(distance) > 1:
+        furlongs = int(distance[1].split("f")[0])
+    return 8*miles + furlongs
 
     
     

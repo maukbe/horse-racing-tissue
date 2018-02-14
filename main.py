@@ -7,12 +7,13 @@ from horsedata import HorseData
 import utils
 import node_parser
 
-page = requests.get('http://www.attheraces.com/racecard/Ludlow/7-February-2018/1645')
+page = requests.get('http://www.attheraces.com/racecard/Towcester/14-February-2018/1610')
 eTree = etree.HTML(page.text)
 
 
 #This will create a list of horses
-horses = eTree.xpath('//div[@class="card-item"]')
+page = eTree.xpath('//body[@id="atr-body"]')
+horses = etree.ElementTree(page[0]).findall('//div[@class="card-item"]')
 
 # Get race distance
 
@@ -47,8 +48,13 @@ for horse_div in horses:
     horse_data = HorseData(i,horse_node,horse_form_node,trainer_form_node, jockey_form_node)
     horse_data_dict[i] = horse_data
     i = i+1
+    
+# Get the race distance
+distance_string = node_parser.get_race_distance(etree.ElementTree(page[0]))
+distance_furlongs = utils.parse_distance(distance_string) 
+print("Race distance", distance_furlongs)
 
-tissue = TissueCreator(horse_data_dict)
+tissue = TissueCreator(horse_data_dict, distance_furlongs)
 tissue.create_tissue()
 
 
