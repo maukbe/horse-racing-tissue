@@ -7,12 +7,14 @@ from horsedata import HorseData
 import utils
 import node_parser
 
-page = requests.get('http://www.attheraces.com/racecard/Sedgefield/6-February-2018/1620')
+page = requests.get('http://www.attheraces.com/racecard/Ludlow/7-February-2018/1645')
 eTree = etree.HTML(page.text)
 
 
 #This will create a list of horses
 horses = eTree.xpath('//div[@class="card-item"]')
+
+# Get race distance
 
 horse_data_dict = {}
 i = 1

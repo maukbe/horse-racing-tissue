@@ -11,7 +11,7 @@ def parse_result(resultString):
     result = resultString.split("/")
     if "Won" in result[0]:
         return Position.WON
-    elif result[0] == "PU" or result[0] == "F":
+    elif result[0] == "PU" or result[0] == "F" or "R" in result[0]:
         return Position.DIDNT_PLACE
     else:
         return did_place(int(result[0]), int(result[1]))

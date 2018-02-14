@@ -23,16 +23,22 @@ class TissueCreator:
             for key in self.scores:
                 if self.scores[key] <= 0:
                     self.scores[key] = 0.1
-            for key in self.scores:
+            for key in sorted(self.scores):
                 odds = float(self.scores[key])/float(total_score)
                 print (key, str(round(1/odds,2)))
 
+        # TODO Check distance before adding to score
+        # TODO Add a second score for the ground
         def calculate_distance_scores(self):
             print("Calculating distance scores")
             for key in self.horse_data_dict:
                 print("Calculating distance score for horse " + str(key))
                 horse_data = self.horse_data_dict[key]
-                last_races = node_parser.get_last_races(horse_data.form,6)
+                try:
+                    last_races = node_parser.get_last_races(horse_data.form,6)
+                except:
+                    print("No prior race data")
+                    continue
                 for i in range(1, len(last_races)):
                     result_string = node_parser.get_race_result(last_races[i])
                     race_result = utils.parse_result(result_string)
@@ -91,21 +97,24 @@ class TissueCreator:
             print ("Calculating OR scores")
             or_dict = {}
             for key in self.horse_data_dict:
-                print("Parsing OR for horse" + str(key))
+                print("Parsing OR for horse " + str(key))
                 horse_data = self.horse_data_dict[key]
                 # Get current OR
                 current_or = node_parser.get_or(horse_data.race_info)
-                old_or = node_parser.get_old_or(horse_data.form)
+                try:
+                    old_or = node_parser.get_old_or(horse_data.form)
+                except ValueError:
+                    old_or = ""
                 or_dict[key] = (current_or, old_or)
             
             for key in or_dict:
-                current_or = int(or_dict[key][0])
                 try:
+                    current_or = int(or_dict[key][0])
                     old_or = int(or_dict[key][1])
-                except ValueError:
+                except (ValueError, TypeError):
                     print ("Horse ", key, " has no previous OR")
                     continue
-                last_result_string = node_parser.get_last_result(self.horse_data_dict[key].form)
+                last_result_string = node_parser.get_last_races(self.horse_data_dict[key].form,1)
                 last_race_pos = utils.parse_result(last_result_string.strip())
                 or_diff = abs(current_or - old_or)
                 if current_or > old_or:

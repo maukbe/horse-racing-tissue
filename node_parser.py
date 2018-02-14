@@ -18,8 +18,11 @@ def get_or(horseNode):
     return horseNode.find("//span[@class='card-icon-text icon-text-steel']").text
     
 def get_old_or(horseNode):
-    return horseNode.find("//span[@class='icon-text-steel or']").text
-    
+    try:
+        old_or = horseNode.find("//span[@class='icon-text-steel or']").text
+    except AttributeError:
+        print("No previous OR")
+
 def get_trainer_url(horse_node):
     links = horse_node.find("//div[@class='card-jockey-trainer']")
     return links[1].get("href")
@@ -76,6 +79,8 @@ def get_last_result(form_node):
 # Get the last n races
 def get_last_races(form_node, n):
     form_table = form_node.find("//table[@id='horse-form-full']")
+    if form_table is None:
+        raise ValueError("No form table available")
     races = etree.ElementTree(form_table).findall("//tr")
     valid_races = []
     added_races = 0
