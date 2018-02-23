@@ -3,6 +3,7 @@ from position import Position
 
 KILOS_IN_POUNDS = 2.204
 POUNDS_IN_STONE = 14
+FURLONGS_IN_MILE = 8
 
 # Take a string of form WON/X or Y/X ad return an enum of whether it placed
 # @result String of the result
@@ -57,10 +58,19 @@ def parse_distance(distance_string):
     miles =  int(distance[0].split("m")[0])
     furlongs = 0
     if len(distance) > 1:
-        furlongs = int(distance[1].split("f")[0])
-    return 8*miles + furlongs
+        try:
+            furlongs = int(distance[1].split("f")[0])
+        except:
+            furlongs = 0
+    return FURLONGS_IN_MILE*miles + furlongs
 
-    
+def parse_time_location_string(time_location_string):
+    time_loc_array = time_location_string.split(" ")
+    try:
+        return time_loc_array[1]
+    except:
+        print("Failed to parse location from string", time_location_string)
+        return ""
     
     
     

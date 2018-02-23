@@ -12,8 +12,8 @@ eTree = etree.HTML(page.text)
 
 
 #This will create a list of horses
-page = eTree.xpath('//body[@id="atr-body"]')
-horses = etree.ElementTree(page[0]).findall('//div[@class="card-item"]')
+page_tree = eTree.xpath('//body[@id="atr-body"]')
+horses = etree.ElementTree(page_tree[0]).findall('//div[@class="card-item"]')
 
 # Get race distance
 
@@ -50,7 +50,7 @@ for horse_div in horses:
     i = i+1
     
 # Get the race distance
-distance_string = node_parser.get_race_distance(etree.ElementTree(page[0]))
+distance_string = node_parser.get_race_distance(etree.ElementTree(page_tree[0]))
 distance_furlongs = utils.parse_distance(distance_string) 
 print("Race distance", distance_furlongs)
 

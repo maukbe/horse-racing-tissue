@@ -1,6 +1,12 @@
 from lxml import etree
 
 # Parser functions for a horse node
+def find_race_location(page_node):
+    return page_node.find("//span[@class='time-location']").text
+
+def find_race_going(page_node):
+    distance_going_div = page_node.find("//div[@class='race-head__distance-and-going']")
+    return etree.ElementTree(distance_going_div).findall("//p")[1].text
 
 # Get the weight
 # @node  Node representing the horse
