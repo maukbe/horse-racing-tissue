@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import node_parser
 import utils
+import HorseDataCreator
 
 class Scraper:
 
@@ -23,6 +24,12 @@ class Scraper:
         race_df = pd.Series(self.race_dict)
         print("Parsed race data:")
         print(race_df)
+        print("Getting current horse data")
+        horse_divs = self.page_node.findall('//div[@class="card-item"]')
+        print(horse_divs[0].text)
+        horseDataCreator = HorseDataCreator.HorseDataCreator(horse_divs)
+        horse_data_frame = horseDataCreator.create_data_frame()
+        print(horse_data_frame)
 
     def find_location(self):
         print("Parsing race location")

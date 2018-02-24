@@ -7,15 +7,13 @@ from horsedata import HorseData
 import utils
 import node_parser
 
-page = requests.get('http://www.attheraces.com/racecard/Towcester/14-February-2018/1610')
+page = requests.get('http://www.attheraces.com/racecard/Kelso/15-February-2018/1535')
 eTree = etree.HTML(page.text)
 
 
 #This will create a list of horses
-page_tree = eTree.xpath('//body[@id="atr-body"]')
-horses = etree.ElementTree(page_tree[0]).findall('//div[@class="card-item"]')
-
-# Get race distance
+page = eTree.xpath('//body[@id="atr-body"]')
+horses = etree.ElementTree(page[0]).findall('//div[@class="card-item"]')
 
 horse_data_dict = {}
 i = 1
@@ -50,7 +48,7 @@ for horse_div in horses:
     i = i+1
     
 # Get the race distance
-distance_string = node_parser.get_race_distance(etree.ElementTree(page_tree[0]))
+distance_string = node_parser.get_race_distance(etree.ElementTree(page[0]))
 distance_furlongs = utils.parse_distance(distance_string) 
 print("Race distance", distance_furlongs)
 
