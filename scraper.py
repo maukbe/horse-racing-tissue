@@ -12,6 +12,7 @@ class Scraper:
         body_tree = page_tree.xpath('//body[@id="atr-body"]')[0]
         self.page_node = etree.ElementTree(body_tree)
         self.race_dict = {}
+        self.horses = {}
     #    self.race_df = pd.DataFrame()
 
     # Generate a panda data frame representing the current race
@@ -20,6 +21,7 @@ class Scraper:
         self.find_location()
         self.find_race_going()
         race_df = pd.Series(self.race_dict)
+        print("Parsed race data:")
         print(race_df)
 
     def find_location(self):
@@ -38,3 +40,19 @@ class Scraper:
         print("Parsing race going")
         going = node_parser.find_race_going(self.page_node)
         self.race_dict["Going"] = going
+
+    def scrape_horse_nodes(self):
+        i = 1
+        for horse_div in self.horses:
+            print("Downloading data for horse: ", i)
+            horse_node = etree.ElementTree(horse_div)
+
+            # Get horse form
+            horse_url = node_parser.get_url(etree.ElementTree(horse_div))
+            horse_page = requests.get("http://www.attheraces.com" + horse_url)
+            horse_e_tree = etree.HTML(horse_page.text)
+            horse_form = horse_e_tree.xpath('//body[@id="atr-body"]')
+            horse_form_node = etree.ElementTree(horse_form[0])
+            self.horses[i] = horse_form_node
+            i = i + 1
+
